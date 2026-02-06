@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap 4.6 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+ <!-- jQuery --> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+    <title>Array Averager</title>
+  </head>
+  <body>
+	  <div class="container">
+      <div class="card text-center p-3 bg-primary my-2" style="color:white" id="answer"> <h1>Quiz Averager</h1></div>
+
+      <form class="form-inline">
+      <div class="input-group my-4 col-9">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Quiz Averager:</span>
+        </div>
+        <input type="text" class="form-control" placeholder="Enter next score" id="quizgrade">
+      </div>
+      <div>
+      <button type="button" class="bg-primary form-control btn-secondary float-right" id="addquizbttn">Calculate</button>
+    </div>
+        </form>
+<div class="row border-bottom my-2">
+  <div class="col-md-6 border-right">
+        <div class="card text-center p-md-1 bg-success col-12 my-2" style="color:white"> <h2>Current Score</h></div>
+        <div class="font-weight-bold" id="scoresdiv">
+        
+        </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card text-center p-1 bg-success col-12 my-2" style="color:white"> <h2>Average</h></div>
+          <div class="font-weight-bold" id="avediv">
+            
+          </div>
+          </div>
+        </div>
+      
+        <div class="card m-auto p-3 text-center bg-danger d-none my-2 col-md-9" style="color:white" id="errormsg"><h3>Please Input a Score First</h3></div>
+      
+        <button type="button" class="col-2 form-control btn-outline-dark float-right disabled my-1" id="clearquizzes">Clear</button>
+        </div>
+
+  
+
+
+
+
+
+
+	  </div> <!-- .container end-->
+  </body>
+
+    <!-- Bootstrap .bundle includes popper -->
+	  
+	  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+	  <script>
+            let docG = (id) => {return document.getElementById(id);}
+            
+            let quizzes = [
+
+            ]
+
+            let calcBttn=docG("addquizbttn")
+            let error = docG("errormsg")
+            let input = docG("quizgrade")
+            let scoreDivs = docG("scoresdiv")
+            let aveDivs = docG("avediv")
+            
+            
+            let addQuizClicked = (e) =>{
+              
+              error.classList.add("d-none")
+              
+              if (isNaN(input.value) == true || input.value.length==0){
+                error.classList.remove("d-none")
+                error.innerHTML = "Please input a valid number"
+              }
+             else{
+              console.log(input.value)
+              quizzes.push(parseFloat(input.value))
+              docG("clearquizzes").className = "col-2 form-control btn-outline-dark float-right my-1"
+              input.value=""
+              input.focus()
+              let htm = "<div class='row' id='allScores'>"
+                for (let i=0; i<quizzes.length; i++){
+                  htm += "<div class='p-2 text-center col-12 col-md-4 border mx-4 mb-2 h3' id='quiz_"+i+"'>"+quizzes[i]+"</div>"
+                }
+                htm += "</div>"
+              scoreDivs.innerHTML = htm
+              let total = 0
+              for (let i=0; i<quizzes.length; i++){
+                
+                let ave = average(quizzes, false)
+                aveDivs.innerHTML = "<div class='text-center'><h3>"+ave.toFixed(2)+"</h3></div>"
+                console.log(ave)
+              }
+             }
+             scoreDivs.innerHTML+="</div>"
+            }
+
+            let sum = (nums) =>{
+              let s=0
+              for(let i=0; i<nums.length; i++){
+                s+=nums[i]
+              }
+              return s
+            }
+
+            let smallest = (nums) =>{
+              let small = nums[0]
+              for (let i=1; i<nums.length; i++){
+              
+                 if (nums[i]<small){
+                  small = nums[i]
+                }
+              }
+              return small
+            }
+
+            
+
+            let average = (vals, dropLowest) =>{
+              let mySum = sum(vals)
+              
+
+              if (dropLowest === true){
+                let lowest = smallest(vals)
+                mySum -= lowest
+                return mySum/(vals.length-1)
+              }
+
+              return mySum/vals.length
+            }
+            calcBttn.addEventListener("click", addQuizClicked)
+
+            let clearScores = () =>{
+
+              quizzes = []
+              scoreDivs.innerHTML=""
+              aveDivs.innerHTML=""
+              input.focus()
+              docG("clearquizzes").className = "col-2 form-control btn-outline-dark float-right disabled my-1"
+              
+            }
+
+            let clearBttn=docG("clearquizzes")
+            clearBttn.addEventListener("click", clearScores)
+
+            
+
+            let tagDiv = docG("tagout")
+            let emailToAbbrs = (array) => {
+              for (let i=0; i<array.length; i++){
+                tagDiv.innerHTML += "<div class='col-12 col-md-6 border p-2 my-1'>" + emailAbbr(array[i]) + "</div>"
+              }
+            }
+        
+
+            let emails = [
+              "spadini@hell.com",
+              "rodier@hacker.com",
+              "sammy@coder.com",
+              "amelia@duplicate.com",
+              "foo@bar.com"
+            ]
+
+            let printArray = (arr) =>{
+              let htm=" <div class='row'>"
+              for (let i=0; i<arr.length; i++){
+                console.log(arr[i])
+                htm+="<div class='col-12 col-md-6 border p-4'>"
+                htm+= arr[i]
+                htm+="</div>"
+                
+              }
+              htm +="</div>"
+              
+            }
+
+            let emailAbbr = (str) =>{
+              let atIndex = str.indexOf("@")
+              let email = str.substring(0,atIndex)
+              let postAt = str.substring(atIndex+1)
+              let abbr = email+postAt
+              return abbr
+            }
+
+            let go = () =>{
+          let scoreElem = docG("quizgrade")
+          scoreElem.value=85
+          addQuizClicked()
+          scoreElem.value=44
+          addQuizClicked()
+          scoreElem.value=100
+          addQuizClicked()
+          scoreElem.value=22
+          addQuizClicked()
+        }
+go()
+
+            
+
+          let enterKey = (event)=>{
+            if (event.key=="Enter"){
+              event.preventDefault()
+              addQuizClicked()
+            }
+          }
+            
+          document.addEventListener("keydown", enterKey)
+            
+          let clickFired = (event) =>{
+            console.log("click somewhere")
+            
+            quizzes.splice(event.target.id, 1)
+            let id=event.target.id
+            console.log(id.substring(id.indexOf("_")+1))
+            console.log(quizzes)
+            
+            let htm = "<div class='row' id='allScores'>"
+                for (let i=0; i<quizzes.length; i++){
+                  htm += "<div class='p-2 text-center col-12 col-md-4 border mx-4 mb-2 h3' id='quiz_"+i+"'>"+quizzes[i]+"</div>"
+                }
+                htm += "</div>"
+              scoreDivs.innerHTML = htm
+              let total = 0
+              aveDivs.innerHTML = ""
+              for (let i=0; i<quizzes.length; i++){
+                if (quizzes.length>0){
+                let ave = average(quizzes, false)
+                aveDivs.innerHTML = "<div class='text-center'><h3>"+ave.toFixed(2)+"</h3></div>"
+                console.log(ave)
+              }
+                
+          }
+        }
+          scoreDivs.addEventListener("click", clickFired)
+            
+      </script>
+	  
+	  
+</html>
